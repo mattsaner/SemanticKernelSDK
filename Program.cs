@@ -5,20 +5,36 @@ using Microsoft.SemanticKernel.Plugins.Core; // For OpenAI Service interaction
 
 
 //Define OpenAI Service connection details
-var deploymentName = "MastercamCopilot";
+var deploymentName = "gpt-35-turbo";
 var endPoint = "https://az2005-training.openai.azure.com/";
 var apiKey = Environment.GetEnvironmentVariable("OPEN_AI_SERVICE_KEY");
-var modelId = "gpt-4o";
+if (string.IsNullOrEmpty(apiKey))
+{
+    Console.WriteLine("API key is not set. Please set the OPEN_AI_SERVICE_KEY environment variable.");
+    return;
+}
+var modelId = "gpt-35-turbo";
 
 // Build Semantic Kernel
 var builder = Kernel.CreateBuilder();
 // Add the OpenAI Chat completion plugin to the kernel builder
 builder.AddAzureOpenAIChatCompletion(deploymentName, endPoint, apiKey, modelId);
 // Add the core plugins to the kernel builder for timer and logging
-builder.Plugins.AddFromType<TimePlugin>();
+//builder.Plugins.AddFromType<TimePlugin>();
+// Add the ConversationSummaryPlugin to the kernel builder
+builder.Plugins.AddFromType<ConversationSummaryPlugin>();
 
-var kernel = builder.Build();       
+var kernel = builder.Build();    
+
+string input = @"I'm a vegan in search of new recipes. I love food!
+Can you give me a list of breakfast recipes that are vegan friendly?"; 
+
+// Set up to extract a simple action item from the conversation
+var result = await kernel.InvokeAsync(
+    "ConversationSummaryPlugin",
+    "GetConversationActionItems",
+    new() {{ "input", input }});
 
 // Invoke the prompt  
-var currentDay = await kernel.InvokeAsync("TimePlugin", "DayOfWeek");
-Console.WriteLine(currentDay);
+//var currentDay = await kernel.InvokeAsync("TimePlugin", "DayOfWeek");
+Console.WriteLine(result);
