@@ -26,19 +26,21 @@ builder.Plugins.AddFromType<ConversationSummaryPlugin>();
 
 var kernel = builder.Build();    
 
-string language = "French";
-string history = @"I'm traveling with my kids and one of them 
-    has a peanut allergy.";
+// Define the input prompt
+string input = @"I'm planning an anniversary trip with my spouse. We like hiking, mountains, 
+    and beaches. Our travel budget is $15000";
 
-string prompt = @$"Consider the traveler's background:
-    ${history}
+// Assign a persona to the prompt
+string prompt = @$"
+    The following is a conversation with an AI travel assistant. 
+    The assistant is helpful, creative, and very friendly.
 
-    Create a list of helpful phrases and words in 
-    ${language} a traveler would find useful.
+    <message role=""user"">Can you give me some travel destination suggestions?</message>
 
-    Group phrases by category. Include common direction 
-    words. Display the phrases in the following format: 
-    Hello - Ciao [chow]";
+    <message role=""assistant"">Of course! Do you have a budget or any specific 
+    activities in mind?</message>
+
+    <message role=""user"">${input}</message>";
 
 var result = await kernel.InvokePromptAsync(prompt);
 Console.WriteLine(result);
