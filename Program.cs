@@ -26,21 +26,13 @@ builder.Plugins.AddFromType<ConversationSummaryPlugin>();
 
 var kernel = builder.Build();    
 
-// Define the input prompt
-string input = @"I'm planning an anniversary trip with my spouse. We like hiking, mountains, 
-    and beaches. Our travel budget is $15000";
+// Invoke the OpenAI Chat completion custom plugin
+var plugins = kernel.CreatePluginFromPromptDirectory("Prompts");
+// Define the input prompt  
+string input = "G, C";
+// Invoke the SuggestChords plugin
+var result = await kernel.InvokeAsync(
+    plugins["SuggestChords"],
+    new() {{ "startingChords", input }});
 
-// Assign a persona to the prompt
-string prompt = @$"
-    The following is a conversation with an AI travel assistant. 
-    The assistant is helpful, creative, and very friendly.
-
-    <message role=""user"">Can you give me some travel destination suggestions?</message>
-
-    <message role=""assistant"">Of course! Do you have a budget or any specific 
-    activities in mind?</message>
-
-    <message role=""user"">${input}</message>";
-
-var result = await kernel.InvokePromptAsync(prompt);
 Console.WriteLine(result);
