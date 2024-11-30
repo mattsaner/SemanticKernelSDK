@@ -62,9 +62,25 @@ OpenAIPromptExecutionSettings settings = new()
     ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
 };
 
-string prompt = @"I live in Portland OR USA. Based on my recently 
+/*string prompt = @"I live in Portland OR USA. Based on my recently 
     played songs and a list of upcoming concerts, which concert 
-    do you recommend?";
+    do you recommend?";*/
+
+// Create a function on the fly
+var songSuggesterFunction = customKernel.CreateFunctionFromPrompt(
+    promptTemplate: @"Based on the user's recently played music:
+        {{$recentlyPlayedSongs}}
+        recommend a song to the user from the music library:
+        {{$musicLibrary}}",
+    functionName: "SuggestSong",
+    description: "Recommend a song from the library"
+);
+
+customKernel.Plugins.AddFromFunctions("SuggestSong", [songSuggesterFunction]);
+
+string prompt = @"Can you recommend a song from the music library?";
+
+//string prompt = @"Add this song to the recently played songs list:  title: 'Touch', artist: 'Cats Eye', genre: 'Pop'";
 
 var result = await customKernel.InvokePromptAsync(prompt, new(settings));
 
