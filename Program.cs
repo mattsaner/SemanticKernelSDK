@@ -26,25 +26,19 @@ builder.Plugins.AddFromType<ConversationSummaryPlugin>();
 
 var kernel = builder.Build();    
 
-string history = @"In the heart of my bustling kitchen, I have embraced 
-    the challenge of satisfying my family's diverse taste buds and 
-    navigating their unique tastes. With a mix of picky eaters and 
-    allergies, my culinary journey revolves around exploring a plethora 
-    of vegetarian recipes.
+string language = "French";
+string history = @"I'm traveling with my kids and one of them 
+    has a peanut allergy.";
 
-    One of my kids is a picky eater with an aversion to anything green, 
-    while another has a peanut allergy that adds an extra layer of complexity 
-    to meal planning. Armed with creativity and a passion for wholesome 
-    cooking, I've embarked on a flavorful adventure, discovering plant-based 
-    dishes that not only please the picky palates but are also heathy and 
-    delicious.";
+string prompt = @$"Consider the traveler's background:
+    ${history}
 
-string prompt = @"This is some information about the user's background: 
-    {{$history}}
+    Create a list of helpful phrases and words in 
+    ${language} a traveler would find useful.
 
-    Given this user's background, provide a list of relevant recipes.";
+    Group phrases by category. Include common direction 
+    words. Display the phrases in the following format: 
+    Hello - Ciao [chow]";
 
-var result = await kernel.InvokePromptAsync(prompt, 
-    new KernelArguments() {{ "history", history }});
-
+var result = await kernel.InvokePromptAsync(prompt);
 Console.WriteLine(result);
