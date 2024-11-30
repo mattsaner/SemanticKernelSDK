@@ -28,7 +28,7 @@ var customKernel = builder.Build();
 customKernel.ImportPluginFromType<MusicLibraryPlugin>();
 
 // Invoke the custom plugin AddToRecentlyPlayed function
-var result = await customKernel.InvokeAsync(
+/*var result = await customKernel.InvokeAsync(
     "MusicLibraryPlugin", 
     "AddToRecentlyPlayed", 
     new() {
@@ -36,6 +36,17 @@ var result = await customKernel.InvokeAsync(
         ["song"] = "Danse", 
         ["genre"] = "French pop, electropop, pop"
     }
-);
-    
+);*/
+string prompt = @"This is a list of music available to the user:
+    {{MusicLibraryPlugin.GetMusicLibrary}} 
+
+    This is a list of music the user has recently played:
+    {{MusicLibraryPlugin.GetRecentPlays}}
+
+    Based on their recently played music, suggest a song from
+    the list to play next";
+
+var result = await customKernel.InvokePromptAsync(prompt);
+
 Console.WriteLine(result);
+    
