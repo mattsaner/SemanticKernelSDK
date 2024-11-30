@@ -13,6 +13,6 @@
             "name": "startingChords",
             "description": "The starting chords provided by the user",
             "required": true
-        },
+        }
     ]
 }
